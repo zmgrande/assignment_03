@@ -1,10 +1,3 @@
-Write your reflection here.
-
-See reflection.md for what makes a good reflection — be specific, use the
-terminology from this assignment (rerun, widget, return value, guard, bytes vs.
-text, decode, session state, initialise once, button-triggered, metric), and make
-it actionable.
-
 This assignment focused on deeply understanding the process behind building a streamlit app
 and developing a UI for users to interact with. The core of the assignment was 3 apps serving
 increasingly more functionality in one_package.py, process_file.py, and process_files.py. One_package.py introduced the idea of
@@ -13,7 +6,6 @@ user inputs. Process_file.py advanced this by using st.file_uploader to process 
 process_files.py introduced the concept of session states and history to track data across reruns and also maintain more data
 than the previous two files.
 
-What I Learned:
 One_package.py required me to understand the process of iterating through dictionaries, or at least remember
 the syntax for doing so in python. It was also a useful exercise in running streamlit side by side to my code, rerunning to
 see my updates and the difference between streamlit widgets. Process_files.py required me to translate an uploaded file from
@@ -27,7 +19,6 @@ were not ran again by the process file button. I also added a reset button to cl
 also showed me how to use streamlit columns and metrics to create better displays, and also to utilize session states to ensure objects appear in
 the correct orientation on the page.
 
-What confuses you? Where did you struggle?
 I struggled with actually writing/dumping the json files into the data directory. I have used Path and pathlib previously, but wanted a
 little bit more experience with utilizing the os library. Os.abspath is similar to pathlib.path.resolve, both giving an ultimate full string path
 that accesses the exact directory needed. I also struggled with correctly resetting and updating the session states in process_files.py, as I often
@@ -35,7 +26,6 @@ had used the wrong syntax or incorrectly accessed the session state keys. I also
 to meet the assignment's expectation of having files process only on the condition that the process button was True. I was first using an onclick to
 bind the button to the function with an arg=[file], but instead had the code be ran under an if statement for the button.
 
-Where might you need more practice?
 Of all the things in this assignment, I need to get a better feel for most of the streamlit syntax and the manner of accessing
 objects in Python, as I kept finding myself having to look up simple tasks like iterating through a dictionary or what the parameters
 of certain streamlit objects were/took.
