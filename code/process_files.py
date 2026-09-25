@@ -38,3 +38,85 @@ Test it: pytest tests/test_streamlit.py -k process_files
 # README Step 7 names the two traps. The tests are built around them: choosing a
 # file without clicking must change nothing, and a rerun with the same file still
 # chosen must not count it again.
+
+import os
+import json
+import streamlit as st
+from packaging_parser import calc_total_units, get_unit, parse_packaging
+
+def reset_uploads():
+    '''
+    Resets counters and deletes all previous json files uploaded
+    '''
+    st.session_state['tot_packages'] = 0
+    st.session_state['tot_uploads'] = 0
+    st.session_state['file_history'] = {}
+
+    data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data"))
+    for filename in os.listdir(data_dir):
+        if filename.endswith(".json"):
+            os.remove(os.path.join(data_dir, filename))
+
+
+if 'tot_packages' not in st.session_state:
+    st.session_state['tot_packages'] = 0
+
+if 'tot_uploads' not in st.session_state:
+    st.session_state['tot_uploads'] = 0
+
+if 'file_history' not in st.session_state:
+    st.session_state['file_history'] = {}
+
+st.title("Process Package Files")
+
+user_upload = st.file_uploader(
+    "Upload file package:",
+    key="package_file"
+)
+
+if st.button(
+    "Process file",
+    type="primary",
+    key="process"):
+    if user_upload is not None and user_upload not in st.session_state['file_history']:
+        text = user_upload.getvalue().decode("utf-8")
+        packages = []
+        for line in text.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+
+            package = parse_packaging(line)
+            packages.append(package)
+            st.session_state['tot_packages'] += 1
+
+        new_file = user_upload.name.replace(".txt", ".json")
+        display_path = os.path.join("data", new_file)
+        abs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", new_file))
+
+        with open(abs_path, "w", encoding="utf-8") as json_file:
+            json.dump(packages, json_file, indent=4)
+
+        st.session_state['file_history'][user_upload] = (f"{len(packages)} packages written to {display_path}")
+        st.session_state['tot_uploads'] += 1
+
+st.button(
+    "Reset",
+    key="reset",
+    on_click=reset_uploads
+)
+
+col1, col2 = st.columns(2)
+with col1:
+    st.metric(
+        "Files processed",
+        st.session_state['tot_uploads']
+    )
+with col2:
+    st.metric(
+        "Packages processed",
+        st.session_state['tot_packages']
+    )
+
+for summary in st.session_state['file_history'].values():
+    st.info(summary)
